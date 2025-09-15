@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keep Me Clean - Main Website</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f0f4f3;
+    color: #004d40;
+    padding: 30px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  header h1 {
+    font-size: 2.8rem;
+    margin: 0;
+    color: #00796b;
+  }
+  .profile {
+    background: #e0f2f1;
+    padding: 25px 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 121, 107, 0.3);
+    max-width: 400px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+  }
+  .profile h2 {
+    margin-top: 0;
+    font-weight: 900;
+    font-size: 1.9rem;
+    color: #004d40;
+  }
+  .profile p {
+    font-size: 1.15rem;
+    color: #00796b;
+    margin: 10px 0 20px 0;
+  }
+  #admin-dashboard-btn,
+  #get-started-btn {
+    display: none; /* hidden by default */
+    padding: 12px 25px;
+    background: #00796b;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+    margin: 8px 0;
+  }
+  #admin-dashboard-btn:hover,
+  #get-started-btn:hover {
+    background-color: #004d40;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Welcome to Keep Me Clean</h1>
+</header>
+
+<section class="profile" aria-label="User Profile Section">
+  <h2 id="username-display">Hello, User!</h2>
+  <p id="role-display">Role: Visitor</p>
+
+  <!-- Admin-only button -->
+  <button id="admin-dashboard-btn" aria-label="Go to Admin Dashboard">
+    Go to Admin Dashboard
+  </button>
+  
+  <!-- Get Started button for everyone -->
+  <button id="get-started-btn" aria-label="Get Started">
+    Get Started
+  </button>
+</section>
+
+<!-- MAIN WEBSITE CONTENT BELOW -->
+<section>
+  <h2>About Keep Me Clean</h2>
+  <p>
+    Keep Me Clean is a community-driven platform dedicated to
+    maintaining clean and safe public spaces. Report issues,
+    track progress, and connect with your neighborhood.
+  </p>
+  <!-- Add other website content here -->
+</section>
+
+<script>
+  const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+  const usernameDisplay = document.getElementById('username-display');
+  const roleDisplay = document.getElementById('role-display');
+  const adminBtn = document.getElementById('admin-dashboard-btn');
+  const getStartedBtn = document.getElementById('get-started-btn');
+
+  if (user) {
+    usernameDisplay.textContent = `Hello, ${user.username}!`;
+    roleDisplay.textContent = `Role: ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}`;
+
+    if (user.role === 'admin') {
+      adminBtn.style.display = 'inline-block';
+
+      adminBtn.addEventListener('click', () => {
+        window.location.href = 'admin-dashboard.html'; // Admin dashboard link
+      });
+    } else {
+      adminBtn.style.display = 'none';
+    }
+    // Show Get Started button for all logged-in users
+    getStartedBtn.style.display = 'inline-block';
+  } else {
+    usernameDisplay.textContent = 'Hello, Guest!';
+    roleDisplay.textContent = 'Role: Visitor';
+    adminBtn.style.display = 'none';
+
+    // Show Get Started button for guests too
+    getStartedBtn.style.display = 'inline-block';
+  }
+
+  // Get Started button redirect
+  getStartedBtn.addEventListener('click', () => {
+    window.location.href = 'login.html'; // Change this to your main website landing page URL
+  });
+</script>
+
+</body>
+</html>

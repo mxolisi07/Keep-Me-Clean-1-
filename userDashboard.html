@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keep Me Clean - User Dashboard</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #e0f7fa;
+    color: #004d40;
+    padding: 30px;
+    max-width: 700px;
+    margin: auto;
+  }
+  h1 {
+    color: #00796b;
+  }
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  button.logout-btn {
+    background-color: #d32f2f;
+    border: none;
+    color: white;
+    padding: 12px 22px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+  }
+  button.logout-btn:hover {
+    background-color: #9a0007;
+  }
+</style>
+</head>
+<body>
+
+<h1>User Dashboard</h1>
+<p id="welcome-msg"></p>
+
+<section>
+  <h2>Your Hygiene Stats</h2>
+  <ul>
+    <li>Times logged in this month: 5</li>
+    <li>Completed hygiene checklists: 12</li>
+    <li>Rewards earned: 3</li>
+  </ul>
+</section>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<script>
+  // Check login
+  const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  if (!user || user.role !== 'user') {
+    window.location.href = 'index.html'; // redirect if not user or not logged in
+  } else {
+    document.getElementById('welcome-msg').textContent = `Hello, ${user.username}! Welcome back to your dashboard.`;
+  }
+
+  function logout() {
+    sessionStorage.removeItem('loggedInUser');
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>

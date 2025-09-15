@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keep Me Clean - Admin Dashboard</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, #e0f7fa 0%, #ffffff 100%);
+    color: #004d40;
+    display: flex;
+    min-height: 100vh;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  /* Sidebar */
+  nav {
+    width: 280px;
+    background: #00695c;
+    color: #e0f2f1;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+  }
+  nav h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 35px;
+    text-align: center;
+    color: #a7ffeb;
+    text-shadow: 1px 1px 2px #004d40;
+  }
+  nav ul {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+  }
+  nav li {
+    margin-bottom: 25px;
+  }
+  nav a {
+    color: #a7ffeb;
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  nav a:hover, nav a.active {
+    background-color: #004d40;
+    box-shadow: inset 5px 0 0 #a7ffeb;
+    color: #ffffff;
+  }
+  nav a svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+  }
+  button.logout-btn {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    border: none;
+    font-weight: 800;
+    color: white;
+    font-size: 1.1rem;
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 30px;
+    box-shadow: 0 4px 12px rgba(211,47,47,0.6);
+    transition: background 0.3s ease;
+  }
+  button.logout-btn:hover {
+    background: linear-gradient(135deg, #9a0007, #6b0005);
+  }
+
+  /* Main content */
+  main {
+    flex-grow: 1;
+    padding: 40px 50px;
+    overflow-y: auto;
+  }
+  main p.admin-label {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #004d40;
+    margin-bottom: 5px;
+    letter-spacing: 0.06em;
+  }
+  main h1 {
+    font-size: 2.8rem;
+    margin-top: 0;
+    margin-bottom: 40px;
+    color: #00796b;
+    text-shadow: 0 0 6px #004d40;
+  }
+
+  /* Cards */
+  .card {
+    background: #ffffffcc;
+    border-radius: 18px;
+    padding: 30px 35px;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  }
+  .card h3 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    color: #004d40;
+    border-bottom: 2px solid #00796b;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* Stats list with progress bars */
+  ul.stats-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  ul.stats-list li {
+    margin-bottom: 20px;
+    font-weight: 600;
+    position: relative;
+    padding-left: 12px;
+  }
+  ul.stats-list li::before {
+    content: '•';
+    color: #00796b;
+    font-size: 28px;
+    position: absolute;
+    left: 0;
+    top: 3px;
+  }
+  .progress-bar {
+    height: 12px;
+    border-radius: 8px;
+    background: #b2dfdb;
+    overflow: hidden;
+    margin-top: 6px;
+    width: 100%;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #00796b;
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* Reporters and hotspots lists */
+  ul.reporters-list, ul.hotspots-list {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1.15rem;
+  }
+  ul.reporters-list li, ul.hotspots-list li {
+    background: #e0f2f1;
+    margin-bottom: 15px;
+    padding: 15px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,121,107,0.2);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Hotspot heat indicator */
+  .heat {
+    font-weight: 900;
+    color: #b71c1c;
+  }
+
+  /* Messages */
+  #messages-list {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 2px solid #00796b;
+    border-radius: 12px;
+    padding: 15px;
+    background: #e0f7fa;
+  }
+  .message-item {
+    background: #ffffffdd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  }
+  .message-item.admin {
+    background: #a7ffebcc;
+    font-weight: 700;
+    border-left: 6px solid #00796b;
+  }
+  .message-item.reporter {
+    background: #b2dfdbcc;
+    font-style: italic;
+  }
+  .message-item strong {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 900;
+  }
+
+  #message-form {
+    margin-top: 20px;
+  }
+  #message-form textarea {
+    width: 100%;
+    border-radius: 14px;
+    border: 2px solid #00796b;
+    padding: 14px;
+    font-size: 1.1rem;
+    resize: vertical;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  #message-form button {
+    margin-top: 14px;
+    background-color: #00796b;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 14px 28px;
+    font-size: 1.15rem;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,121,107,0.5);
+  }
+  #message-form button:hover {
+    background-color: #004d40;
+  }
+  #message-status {
+    margin-top: 12px;
+    font-weight: 700;
+  }
+
+  /* Notifications bell */
+  #notif-bell {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    cursor: pointer;
+    font-size: 28px;
+    color: #d32f2f;
+    filter: drop-shadow(0 0 3px #d32f2f);
+    user-select: none;
+    transition: transform 0.25s ease;
+  }
+  #notif-bell:hover {
+    transform: scale(1.2);
+  }
+  #notif-count {
+    background: #b71c1c;
+    color: white;
+    font-weight: 900;
+    font-size: 0.85rem;
+    border-radius: 50%;
+    padding: 3px 8px;
+    position: absolute;
+    top: -8px;
+    right: -10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    body {
+      flex-direction: column;
+    }
+    nav {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 15px 0;
+      box-shadow: none;
+    }
+    nav ul {
+      display: flex;
+      gap: 25px;
+      flex-grow: 1;
+      justify-content: center;
+    }
+    nav li {
+      margin-bottom: 0;
+    }
+    main {
+      padding: 25px 15px;
+    }
+    #notif-bell {
+      top: 10px;
+      right: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Notification bell -->
+<div id="notif-bell" title="New Reports! 🔔" aria-label="Notifications">
+  🔔 <span id="notif-count" style="display:none;">0</span>
+</div>
+
+<nav>
+  <h2>Keep Me Clean</h2>
+  <ul>
+    <li><a href="#insights" class="active" aria-current="page">
+      <!-- Chart icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 14h2v6H4v-6zm6-8h2v14h-2V6zm6 4h2v10h-2v-10z"/></svg>
+      Insights
+    </a></li>
+    <li><a href="#reporters">
+      <!-- Users icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2 0-6 1-6 3v2h12v-2c0-2-4-3-6-3zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.12 1.97 3.45v2h6v-2c0-2-4-3-6-3z"/></svg>
+      Reporters
+    </a></li>
+    <li><a href="#hotspots">
+      <!-- Location icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+      Hot Areas
+    </a></li>
+    <li><a href="#messages">
+      <!-- Chat bubble icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
+      Communicate
+    </a></li>
+  </ul>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<main>
+  <p class="admin-label">*** Admin Side ***</p>
+  <h1 id="welcome-msg">Hello Admin!</h1>
+
+  <!-- Insights Section -->
+  <section id="insights" class="card" aria-label="Website Insights Section">
+    <h3>Website Insights</h3>
+    <ul class="stats-list">
+      <li>
+        Total Registered Users: 23
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-fill" style="width: 65%;"></div>
+        </div>
+      </li>
+      <li>
+        Active Users Today: 9
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-fill" style="width: 40%;"></div>
+        </div>
+      </li>
+      <li>
+        Feedback Submitted: 15
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-fill" style="width: 50%;"></div>
+        </div>
+      </li>
+      <li>
+        Monthly Visits: 142
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-fill" style="width: 80%;"></div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Reporters Section -->
+  <section id="reporters" class="card" style="display:none;" aria-label="Users Who Reported Issues">
+    <h3>Users Who Reported Issues</h3>
+    <ul class="reporters-list" id="reporters-list">
+      <!-- Filled by script -->
+    </ul>
+  </section>
+
+  <!-- Hotspots Section -->
+  <section id="hotspots" class="card" style="display:none;" aria-label="High Report Areas">
+    <h3>High Report Areas (Hotspots)</h3>
+    <ul class="hotspots-list" id="hotspots-list">
+      <!-- Filled by script -->
+    </ul>
+    <p style="margin-top: 25px; font-style: italic; color: #004d40dd;">
+      * This section highlights areas with frequent reports to prioritize cleanup.
+    </p>
+  </section>
+
+  <!-- Communication Section -->
+  <section id="messages" class="card" style="display:none;" aria-label="Communication Center">
+    <h3>Communicate with Reporters</h3>
+    <div id="messages-list" aria-live="polite" aria-relevant="additions" aria-atomic="false" style="max-height: 280px; overflow-y: auto; border: 2px solid #00796b; border-radius: 12px; padding: 15px; background: #e0f7fa;">
+      <!-- Messages will appear here -->
+    </div>
+    <form id="message-form" aria-label="Send a message to reporters">
+      <label for="message-input" style="font-weight:700;">Write a message:</label>
+      <textarea id="message-input" placeholder="Type your message here..." required aria-required="true" aria-describedby="message-status"></textarea>
+      <button type="submit">Send Message</button>
+      <p id="message-status" role="alert" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+
+<script>
+  // Mock logged-in user, enforce admin-only access
+  const user = JSON.parse(sessionStorage.getItem('loggedInUser')) || {username:'AdminUser', role:'admin'};
+  if (!user || user.role !== 'admin') {
+    window.location.href = 'index.html'; // redirect if not admin
+  }
+  document.getElementById('welcome-msg').textContent = `Hello Admin ${user.username}!`;
+
+  // Sections and nav links
+  const sections = ['insights', 'reporters', 'hotspots', 'messages'];
+  const navLinks = document.querySelectorAll('nav ul li a');
+  const sectionEls = {};
+  sections.forEach(id => {
+    sectionEls[id] = document.getElementById(id);
+  });
+
+  // Function to show selected section only
+  function showSection(id) {
+    sections.forEach(sec => {
+      sectionEls[sec].style.display = (sec === id) ? 'block' : 'none';
+    });
+  }
+
+  // Handle nav link clicks
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      const target = link.getAttribute('href').substring(1);
+      showSection(target);
+    });
+  });
+
+  // Show default section on page load
+  showSection('insights');
+  navLinks[0].classList.add('active');
+
+  // Populate reporters list (example data)
+  const reportersData = [
+    { username: 'john_doe', reports: 5, lastReport: '2025-08-10' },
+    { username: 'jane_smith', reports: 3, lastReport: '2025-08-09' },
+    { username: 'mike_brown', reports: 1, lastReport: '2025-08-08' }
+  ];
+  const reportersList = document.getElementById('reporters-list');
+  reportersList.innerHTML = reportersData.map(r =>
+    `<li><span>${r.username}</span><span>Reports: ${r.reports}</span><span>Last: ${r.lastReport}</span></li>`
+  ).join('');
+
+  // Populate hotspots list (example data)
+  const hotspotsData = [
+    { area: 'Central Park', reports: 8 },
+    { area: 'Downtown Mall', reports: 6 },
+    { area: 'River Side', reports: 4 }
+  ];
+  const hotspotsList = document.getElementById('hotspots-list');
+  hotspotsList.innerHTML = hotspotsData.map(h =>
+    `<li><span>${h.area}</span><span class="heat">Reports: ${h.reports}</span></li>`
+  ).join('');
+
+  // Messaging section
+  const messagesList = document.getElementById('messages-list');
+  const messageForm = document.getElementById('message-form');
+  const messageInput = document.getElementById('message-input');
+  const messageStatus = document.getElementById('message-status');
+
+  // Dummy initial messages
+  let messages = [
+    { from: 'john_doe', text: 'There is trash accumulating near the river.' },
+    { from: user.username, text: 'Thanks for reporting, we will send a cleanup crew.' }
+  ];
+
+  function renderMessages() {
+    messagesList.innerHTML = messages.map(m => 
+      `<div class="message-item ${m.from === user.username ? 'admin' : 'reporter'}" role="article" aria-label="Message from ${m.from}">
+        <strong>${m.from}:</strong> ${m.text}
+      </div>`
+    ).join('');
+    messagesList.scrollTop = messagesList.scrollHeight;
+  }
+
+  messageForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const msgText = messageInput.value.trim();
+    if (!msgText) {
+      messageStatus.style.color = '#d32f2f';
+      messageStatus.textContent = 'Message cannot be empty.';
+      return;
+    }
+    messages.push({ from: user.username, text: msgText });
+    messageInput.value = '';
+    messageStatus.style.color = '#388e3c';
+    messageStatus.textContent = 'Message sent!';
+    renderMessages();
+  });
+
+  renderMessages();
+
+  // Notification bell logic example (just display count of reporters with reports > 2)
+  const notifBell = document.getElementById('notif-bell');
+  const notifCount = document.getElementById('notif-count');
+  const urgentReports = reportersData.filter(r => r.reports > 2).length;
+  if (urgentReports > 0) {
+    notifCount.style.display = 'inline-block';
+    notifCount.textContent = urgentReports;
+  } else {
+    notifCount.style.display = 'none';
+  }
+  notifBell.addEventListener('click', () => {
+    alert(`You have ${urgentReports} reporters with multiple reports to check!`);
+  });
+
+  // Logout function
+  function logout() {
+    sessionStorage.removeItem('loggedInUser');
+    window.location.href = 'login.html';
+  }
+</script>
+
+</body>
+</html>

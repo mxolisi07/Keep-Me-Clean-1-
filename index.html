@@ -1,0 +1,376 @@
+<!doctype html>
+<!-- The HTML code from the canvas output goes here exactly as created above -->
+<!--
+Keep Me Clean - Single-file Website
+Save this file as `index.html` and open it in your browser to run the site locally.
+All images are embedded as data-URI SVGs so you don't need external files.
+This is a simple responsive single-page app (SPA) with the following interfaces:
+- Home / Landing
+- Report Issue (photo + description + geotag simulated)
+- My Reports (user view)
+- Admin Dashboard (mock data and report status updates)
+- Profile / Points
+
+Built for clarity, accessibility, and ease-of-use. Replace placeholder SVG images with real base64 images if you want real photos.
+-->
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Keep Me Clean</title>
+  <style>
+    /* Simple modern styles (no external libs) */
+    :root{--brand:#0b6e4f;--accent:#ffb703;--muted:#6b7280;--bg:#f7faf9}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#0f172a}
+    header{background:white; box-shadow:0 2px 6px rgba(15,23,42,0.06); position:sticky; top:0; z-index:30}
+    .container{max-width:1100px; margin:0 auto; padding:20px}
+    .nav{display:flex; align-items:center; gap:16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand .logo{width:42px; height:42px; border-radius:8px; background:linear-gradient(135deg,var(--brand),#087f63); display:flex; align-items:center; justify-content:center; color:white; font-weight:700}
+    nav{margin-left:auto; display:flex; gap:8px}
+    button, .btn{background:var(--brand); color:white; border:none; padding:10px 14px; border-radius:8px; cursor:pointer}
+    .btn.secondary{background:transparent; color:var(--brand); border:1px solid rgba(11,110,79,0.12)}
+    main{padding:28px 0}
+    .grid{display:grid; gap:18px}
+    .card{background:white; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+    .hero{display:flex; gap:20px; align-items:center}
+    .hero .col{flex:1}
+
+    /* Responsive columns */
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    @media (max-width:900px){.cols-3{grid-template-columns:1fr 1fr}.hero{flex-direction:column}.nav{display:none}}
+    @media (max-width:600px){.cols-2{grid-template-columns:1fr}.container{padding:12px}}
+
+    label{display:block; margin-bottom:6px; font-weight:600}
+    input[type=text], input[type=file], textarea, select{width:100%; padding:10px; border-radius:8px; border:1px solid #e6eef0}
+    .muted{color:var(--muted); font-size:14px}
+    .small{font-size:13px}
+
+    /* Table */
+    table{width:100%; border-collapse:collapse}
+    th, td{padding:10px 8px; text-align:left; border-bottom:1px solid #f1f5f9}
+    th{font-size:13px; color:var(--muted)}
+
+    /* footer */
+    footer{padding:20px 0; color:var(--muted); font-size:14px}
+
+    /* Tiny map placeholder */
+    .map{width:100%; height:160px; border-radius:10px; background:linear-gradient(180deg,#e6fffa,#ecfdf5); display:flex; align-items:center; justify-content:center; color:var(--brand); font-weight:700}
+
+    /* Avatars */
+    .avatar{width:36px; height:36px; border-radius:50%; background:#e6f6ef; display:inline-flex; align-items:center; justify-content:center; color:var(--brand); font-weight:700}
+
+    /* small helpers */
+    .flex{display:flex; align-items:center; gap:10px}
+    .space{height:18px}
+
+    /* mobile bottom nav */
+    .mobile-nav{display:none}
+    @media (max-width:700px){.mobile-nav{display:flex; position:fixed; bottom:12px; left:12px; right:12px; gap:12px; z-index:50}}
+    .mobile-nav button{flex:1}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">K</div>
+        <div>
+          <div style="font-weight:700">Keep Me Clean</div>
+          <div class="muted small">Report • Track • Clean</div>
+        </div>
+      </div>
+      <nav>
+        <button class="btn" onclick="showView('home')">Home</button>
+        <button class="btn secondary" onclick="showView('report')">Report Issue</button>
+        <!-- Changed dashboard button to adminDashboard -->
+        <button class="btn secondary" onclick="showView('adminDashboard')">Admin Dashboard</button>
+        <button class="btn" onclick="showView('profile')">My Profile</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HOME -->
+    <section id="home" class="view">
+      <div class="hero card">
+        <div class="col">
+          <h1 style="margin:0 0 8px 0">Help keep your community clean</h1>
+          <p class="muted">Report litter, illegal dumping, and pollution. Earn points, join challenges, and see local cleanup results.</p>
+
+          <div style="margin-top:12px" class="flex">
+            <button class="btn" onclick="showView('report')">Report an Issue</button>
+            <button class="btn secondary" onclick="showView('adminDashboard')">View Hotspots</button>
+          </div>
+
+          <div class="space"></div>
+
+          <div class="cols-3 grid">
+            <div class="card small">
+              <div style="font-weight:700">Data-free reports</div>
+              <div class="muted small">Low-data mode to let users submit reports without mobile charges.</div>
+            </div>
+            <div class="card small">
+              <div style="font-weight:700">Points & Rewards</div>
+              <div class="muted small">Earn points and redeem vouchers with local partners.</div>
+            </div>
+            <div class="card small">
+              <div style="font-weight:700">Trusted by municipalities</div>
+              <div class="muted small">Direct reporting to municipal waste officers.</div>
+            </div>
+          </div>
+        </div>
+        <div style="width:360px">
+          <div class="card">
+            <div style="font-weight:700; margin-bottom:8px">Community Hotspots</div>
+            <div class="map">Map Placeholder</div>
+            <div style="margin-top:10px; display:flex; gap:8px; justify-content:space-between; align-items:center">
+              <div class="muted small">Updated: <strong id="hotspotUpdated">Today</strong></div>
+              <div class="flex">
+                <div class="avatar">T</div>
+                <div class="muted small">Top reporter: Tshepo</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space"></div>
+
+          <div class="card small">
+            <div style="font-weight:700">How it works</div>
+            <ol class="muted small">
+              <li>Take a photo of the issue</li>
+              <li>Add a short description</li>
+              <li>Submit — municipality receives the report</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="space"></div>
+
+      <div class="cols-2 grid">
+        <div class="card">
+          <h3 style="margin-top:0">Latest Reports</h3>
+          <table id="reportsTable">
+            <thead>
+              <tr><th>Photo</th><th>Description</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0">Community Challenges</h3>
+          <div class="muted small">Join neighborhood clean-ups and weekly challenges to earn bonus points.</div>
+          <div style="margin-top:12px; display:flex; gap:8px">
+            <div class="card small" style="flex:1">
+              <div style="font-weight:700">Week 32: #BagItChallenge</div>
+              <div class="muted small">Collect 5 bags and earn 100 points.</div>
+            </div>
+            <div class="card small" style="flex:1">
+              <div style="font-weight:700">School Swap</div>
+              <div class="muted small">Schools compete for the cleanest schoolyard.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORT FORM -->
+    <section id="report" class="view" style="display:none">
+      <div class="card">
+        <h2 style="margin-top:0">Report an Issue</h2>
+        <p class="muted small">Quick, simple reporting. Photos are embedded and can be previewed before submit.</p>
+
+        <form id="reportForm">
+          <div>
+            <label for="photo">Photo (choose file or use sample)</label>
+            <input type="file" id="photo" accept="image/*">
+            <div class="muted small">If you don't add a photo, a placeholder will be used.</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label for="desc">Short description</label>
+            <input type="text" id="desc" placeholder="e.g. Large pile of mixed waste near the school gate" required>
+          </div>
+
+          <div style="margin-top:12px">
+            <label for="category">Category</label>
+            <select id="category">
+              <option>Illegal dumping</option>
+              <option>Litter</option>
+              <option>Sewer overflow</option>
+              <option>Hazardous waste</option>
+            </select>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Location (simulated)</label>
+            <input type="text" id="location" placeholder="Eg. 12.345, -26.789 or 'Main St, Kimberley'">
+            <div class="muted small">Tip: Allow location for accurate reports. This demo uses a simulated location if left blank.</div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:8px">
+            <button class="btn" type="submit">Submit Report</button>
+            <button type="button" class="btn secondary" onclick="showView('home')">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="adminDashboard" class="view" style="display:none">
+     <button onclick="window.location.href='adminDashboard.html'">Go to Dashboard</button>
+
+
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="view" style="display:none">
+      <div class="card">
+        <h2 style="margin-top:0">My Profile</h2>
+        <div class="flex" style="justify-content:space-between">
+          <div>
+            <div style="display:flex; gap:12px; align-items:center">
+              <div class="avatar">T</div>
+              <div>
+                <div style="font-weight:700">Tokollo Oliphant</div>
+                <div class="muted small">Top reporter • 420 pts</div>
+              </div>
+            </div>
+
+            <div class="space"></div>
+            <div class="muted small">Redeem points at partner stores, or join weekly challenges to earn more.</div>
+          </div>
+          <div style="width:280px">
+            <div class="card small">
+              <div style="font-weight:700">Quick stats</div>
+              <div style="margin-top:8px">
+                <div class="muted small">Reports submitted: <strong id="statReports">3</strong></div>
+                <div class="muted small">Resolved: <strong id="statResolved">2</strong></div>
+                <div class="muted small">Points: <strong id="statPoints">420</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="mobile-nav" style="display:none">
+    <button class="btn" onclick="showView('home')">Home</button>
+    <button class="btn secondary" onclick="showView('report')">Report</button>
+    <button class="btn secondary" onclick="showView('adminDashboard')">Admin</button>
+  </div>
+
+  <footer class="container">
+    <div class="muted">Keep Me Clean • Prototype • Built for demo purposes</div>
+  </footer>
+
+  <script>
+    
+    // Simple SPA logic and demo data storage (local only)
+    const views = ['home','report','adminDashboard','profile'];
+    function showView(id){
+      views.forEach(v=>document.getElementById(v).style.display=(v===id? 'block':'none'));
+      // show mobile nav on small screens
+      document.querySelector('.mobile-nav').style.display = window.innerWidth <= 700 ? 'flex' : 'none';
+      if(id==='home') renderReports();
+      if(id==='adminDashboard') renderAdmin();
+    }
+
+    // Demo reports store in localStorage
+    const defaultReports = [
+      {id:1, photo:sampleSVG('trash'), desc:'Illegal dumping behind clinic', loc:'Main Rd, Kimberley', status:'Resolved'},
+      {id:2, photo:sampleSVG('litter'), desc:'Plastic litter near park entrance', loc:'Green Park', status:'In Progress'},
+      {id:3, photo:sampleSVG('sewage'), desc:'Sewer overflow on 3rd Ave', loc:'3rd Ave', status:'Reported'}
+    ];
+
+    function getReports(){
+      const raw = localStorage.getItem('kmc_reports');
+      if(!raw){ localStorage.setItem('kmc_reports', JSON.stringify(defaultReports)); return defaultReports; }
+      return JSON.parse(raw);
+    }
+    function saveReports(list){ localStorage.setItem('kmc_reports', JSON.stringify(list)); }
+
+    function renderReports(){
+      const tbody = document.querySelector('#reportsTable tbody'); tbody.innerHTML='';
+      const rows = getReports().slice().reverse();
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="width:90px">${r.photo}</td><td>${escapeHTML(r.desc)}</td><td><strong>${r.status}</strong></td>`;
+        tbody.appendChild(tr);
+      })
+    }
+
+    function renderAdmin(){
+      const admin = document.getElementById('adminTable'); admin.innerHTML='';
+      getReports().forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.id}</td><td style="width:90px">${r.photo}</td><td>${escapeHTML(r.desc)}</td><td>${escapeHTML(r.loc)}</td><td><strong>${r.status}</strong></td><td><select data-id="${r.id}"><option>Reported</option><option>In Progress</option><option>Resolved</option></select> <button onclick="updateStatus(${r.id})" class="btn small">Save</button></td>`;
+        admin.appendChild(tr);
+        tr.querySelector('select').value = r.status;
+      })
+    }
+
+    function updateStatus(id){
+      const sel = document.querySelector(`select[data-id='${id}']`);
+      const reports = getReports().map(r=> r.id===id? {...r, status: sel.value} : r );
+      saveReports(reports); renderAdmin(); renderReports();
+      alert('Status updated');
+    }
+
+    // Report form handling
+    document.getElementById('reportForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const file = document.getElementById('photo').files[0];
+      let dataURL = null;
+      if(file){ dataURL = await toDataURL(file); }
+      else { dataURL = sampleSVG('trash'); }
+      const desc = document.getElementById('desc').value;
+      const loc = document.getElementById('location').value || 'Simulated: -28.744,24.771';
+      const reports = getReports();
+      const id = reports.length? Math.max(...reports.map(r=>r.id))+1 : 1;
+      reports.push({id, photo:dataURL, desc, loc, status:'Reported'});
+      saveReports(reports);
+      document.getElementById('reportForm').reset();
+      showView('home');
+      renderReports();
+      alert('Report submitted. Thank you!');
+    })
+
+    // Helpers
+    function sampleSVG(type){
+      // basic sample SVG icons as inline base64 (placeholder images)
+      const icons = {
+        trash: `<svg width="80" height="50" viewBox="0 0 24 24" fill="none" stroke="#0b6e4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2" ry="2"/><line x1="9" y1="10" x2="9" y2="16"/><line x1="15" y1="10" x2="15" y2="16"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="10" y1="3" x2="14" y2="3"/></svg>`,
+        litter: `<svg width="80" height="50" viewBox="0 0 24 24" fill="none" stroke="#0b6e4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+        sewage: `<svg width="80" height="50" viewBox="0 0 24 24" fill="none" stroke="#0b6e4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M12 3v18"/></svg>`
+      };
+      return icons[type] || icons.trash;
+    }
+    function escapeHTML(str){ return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    function toDataURL(file){
+      return new Promise((res, rej)=>{
+        const reader = new FileReader();
+        reader.onload = e=>res(`<img src="${e.target.result}" alt="Report photo" style="width:80px; height:auto; border-radius:6px" />`);
+        reader.onerror = e=>rej(e);
+        reader.readAsDataURL(file);
+      })
+    }
+
+    // Show initial view
+    showView('home');
+
+  </script>
+
+</body>
+</html>

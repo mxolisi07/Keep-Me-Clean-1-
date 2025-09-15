@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keep Me Clean - Login & Register</title>
+<style>
+  /* Reset and basics */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #a8dadc, #457b9d);
+    color: #004d40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  main {
+    background: #ffffffee;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    padding: 30px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header {
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #00796b;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px #004d40aa;
+  }
+  /* Toggle buttons */
+  .toggle-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .toggle-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 30px;
+    background: #00796b33;
+    color: #00796b;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+  .toggle-btn.active {
+    background: #00796b;
+    color: white;
+    box-shadow: 0 4px 12px #004d40aa;
+  }
+  .toggle-btn:hover:not(.active) {
+    background: #004d4088;
+    color: white;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  form.hidden {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #004d40;
+  }
+  input[type=text], input[type=password], select {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #00796b;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  input[type=text]:focus, input[type=password]:focus, select:focus {
+    border-color: #004d40;
+  }
+  button.submit-btn {
+    background-color: #00796b;
+    border: none;
+    color: white;
+    padding: 14px;
+    font-size: 1.15rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 6px 15px #004d40aa;
+    transition: background-color 0.3s ease;
+  }
+  button.submit-btn:hover {
+    background-color: #004d40;
+  }
+  /* Feedback message */
+  .message {
+    margin-top: 12px;
+    font-weight: 700;
+    text-align: center;
+    min-height: 22px;
+    user-select: none;
+  }
+  .message.error {
+    color: #d32f2f;
+  }
+  .message.success {
+    color: #388e3c;
+  }
+
+  /* Responsive */
+  @media (max-width: 450px) {
+    main {
+      width: 90vw;
+      padding: 25px 20px 35px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <header>Keep Me Clean</header>
+
+  <div class="toggle-btns">
+    <button id="btn-login" class="toggle-btn active" type="button">Login</button>
+    <button id="btn-register" class="toggle-btn" type="button">Register</button>
+  </div>
+
+  <!-- Login Form -->
+  <form id="login-form" autocomplete="off">
+    <label for="login-username">Username</label>
+    <input type="text" id="login-username" placeholder="Enter username" required />
+    <label for="login-password">Password</label>
+    <input type="password" id="login-password" placeholder="Enter password" required />
+    <button type="submit" class="submit-btn">Login</button>
+    <p id="login-message" class="message"></p>
+  </form>
+
+  <!-- Register Form -->
+  <form id="register-form" class="hidden" autocomplete="off">
+    <label for="reg-username">Username</label>
+    <input type="text" id="reg-username" placeholder="Choose a username" required />
+    <label for="reg-password">Password</label>
+    <input type="password" id="reg-password" placeholder="Create a password" required />
+    <label for="reg-role">Select Role</label>
+    <select id="reg-role" required>
+      <option value="user" selected>User</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button type="submit" class="submit-btn">Register</button>
+    <p id="reg-message" class="message"></p>
+  </form>
+</main>
+
+<script>
+  const btnLogin = document.getElementById('btn-login');
+  const btnRegister = document.getElementById('btn-register');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const loginMsg = document.getElementById('login-message');
+  const regMsg = document.getElementById('reg-message');
+
+  // Toggle forms
+  btnLogin.addEventListener('click', () => {
+    btnLogin.classList.add('active');
+    btnRegister.classList.remove('active');
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+    clearMessages();
+  });
+
+  btnRegister.addEventListener('click', () => {
+    btnRegister.classList.add('active');
+    btnLogin.classList.remove('active');
+    registerForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
+    clearMessages();
+  });
+
+  function clearMessages() {
+    loginMsg.textContent = '';
+    regMsg.textContent = '';
+    loginMsg.className = 'message';
+    regMsg.className = 'message';
+  }
+
+  // Local Storage users helper
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('users') || '[]');
+  }
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  // Register submit
+  registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('reg-username').value.trim();
+    const password = document.getElementById('reg-password').value.trim();
+    const role = document.getElementById('reg-role').value;
+
+    if (!username || !password) {
+      regMsg.textContent = 'Please fill in all fields.';
+      regMsg.classList.add('error');
+      return;
+    }
+
+    const users = getUsers();
+    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+      regMsg.textContent = 'Username already exists.';
+      regMsg.classList.add('error');
+      return;
+    }
+
+    users.push({ username, password, role });
+    saveUsers(users);
+
+    regMsg.textContent = 'Registration successful! You can now login.';
+    regMsg.classList.remove('error');
+    regMsg.classList.add('success');
+
+    setTimeout(() => {
+      btnLogin.click();
+      registerForm.reset();
+      clearMessages();
+    }, 2000);
+  });
+
+  // Login submit
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    if (!username || !password) {
+      loginMsg.textContent = 'Please fill in all fields.';
+      loginMsg.classList.add('error');
+      return;
+    }
+
+    const users = getUsers();
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+    if (!user) {
+      loginMsg.textContent = 'Invalid username or password.';
+      loginMsg.classList.add('error');
+      return;
+    }
+
+    if(user.role === 'admin'){
+  window.location.href = 'admin-dashboard.html';
+}else{
+  window.location.href = 'user-dashboard.html';
+}
+    
+
+    // Save logged in user and redirect
+    sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+    window.location.href = 'index.html';
+  });
+</script>
+
+</body>
+</html>
