@@ -259,6 +259,7 @@
     font-size: 28px;
     color: #d32f2f;
     filter: drop-shadow(0 0 3px #d32f2f);
+    -webkit-user-select: none;
     user-select: none;
     transition: transform 0.25s ease;
   }
@@ -311,8 +312,8 @@
 <body>
 
 <!-- Notification bell -->
-<div id="notif-bell" title="New Reports! 🔔" aria-label="Notifications">
-  🔔 <span id="notif-count" style="display:none;">0</span>
+ <div id="notif-bell" title="New Reports! 🔔" aria-label="Notifications">
+  🔔 <span id="notif-count" style="display:none;">0</span> 
 </div>
 
 <nav>
@@ -415,9 +416,9 @@
   // Mock logged-in user, enforce admin-only access
   const user = JSON.parse(sessionStorage.getItem('loggedInUser')) || {username:'AdminUser', role:'admin'};
   if (!user || user.role !== 'admin') {
-    window.location.href = 'index.html'; // redirect if not admin
+    window.location.href = 'adminDashboard.html'; // redirect if not admin
   }
-  document.getElementById('welcome-msg').textContent = `Hello Admin ${user.username}!`;
+  document.getElementById('welcome-msg').textContent = `Hello ${user.username}!`;
 
   // Sections and nav links
   const sections = ['insights', 'reporters', 'hotspots', 'messages'];

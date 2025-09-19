@@ -1,0 +1,132 @@
+/* Reset and basics */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #a8dadc, #457b9d);
+    color: #004d40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  main {
+    background: #ffffffee;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    padding: 30px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header {
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #00796b;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px #004d40aa;
+  }
+  /* Toggle buttons */
+  .toggle-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .toggle-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 30px;
+    background: #00796b33;
+    color: #00796b;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .toggle-btn.active {
+    background: #00796b;
+    color: white;
+    box-shadow: 0 4px 12px #004d40aa;
+  }
+  .toggle-btn:hover:not(.active) {
+    background: #004d4088;
+    color: white;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  form.hidden {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #004d40;
+  }
+  input[type=text], input[type=password], select {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #00796b;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  input[type=text]:focus, input[type=password]:focus, select:focus {
+    border-color: #004d40;
+  }
+  button.submit-btn {
+    background-color: #00796b;
+    border: none;
+    color: white;
+    padding: 14px;
+    font-size: 1.15rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 6px 15px #004d40aa;
+    transition: background-color 0.3s ease;
+  }
+  button.submit-btn:hover {
+    background-color: #004d40;
+  }
+  /* Feedback message */
+  .message {
+    margin-top: 12px;
+    font-weight: 700;
+    text-align: center;
+    min-height: 22px;
+    -webkit-user-select: none;
+  }
+  .message.error {
+    color: #d32f2f;
+  }
+  .message.success {
+    color: #388e3c;
+  }
+
+  /* Responsive */
+  @media (max-width: 450px) {
+    main {
+      width: 90vw;
+      padding: 25px 20px 35px;
+    }
+  }
+
+
+/********************* index html **************************/
+  

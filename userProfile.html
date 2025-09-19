@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6a11cb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .login-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-content {
+            flex: 2;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: white;
+        }
+        
+        .user-info h2 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .user-info p {
+            color: #666;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .badge-user {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-item h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #6a11cb;
+        }
+        
+        .stat-item p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .profile-details {
+            margin-top: 30px;
+        }
+        
+        .profile-details h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            color: #444;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .detail-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .detail-item i {
+            width: 30px;
+            color: #6a11cb;
+            font-size: 18px;
+        }
+        
+        .detail-item span {
+            color: #555;
+        }
+        
+        .menu-item {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .menu-item:hover {
+            background-color: #f0f5ff;
+            color: #6a11cb;
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .login-prompt i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-circle"></i>
+                <span>ProfileHub</span>
+            </div>
+            <div class="login-section">
+                <button class="btn btn-primary" onclick="loginAsUser()">
+                    <i class="fas fa-sign-in-alt"></i> Login as User
+                </button>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Menu</h3>
+                <div class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Privacy</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Billing</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <div id="profile-view">
+                    <div class="profile-header">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <h2 id="user-name">Guest User</h2>
+                            <p id="user-email">guest@example.com</p>
+                            <span class="badge badge-user" id="user-badge">Not logged in</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h3>128</h3>
+                            <p>Posts</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>2.5K</h3>
+                            <p>Followers</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>487</h3>
+                            <p>Following</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <h3>Personal Information</h3>
+                        <div class="detail-item">
+                            <i class="fas fa-envelope"></i>
+                            <span id="info-email">guest@example.com</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-phone"></i>
+                            <span id="info-phone">+1 (555) 123-4567</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="info-location">New York, USA</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-briefcase"></i>
+                            <span id="info-job">Software Developer</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="info-joined">Joined January 2023</span>
+                        </div>
+                    </div>
+                </div>
+                
+                  <!--  <button class="btn btn-primary btn-margin-top" onclick="loginAsUser()">
+                        <i class="fas fa-sign-in-alt"></i> Login Now
+                    </button>
+                    <p>Login to access your profile and customize your experience</p>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="loginAsUser()">
+                        <i class="fas fa-sign-in-alt"></i> Login Now
+                    </button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to simulate user login
+        function loginAsUser() {
+            const user = {
+                name: "Emily Johnson",
+                email: "emily.johnson@example.com",
+                role: "user",
+                phone: "+1 (555) 987-6543",
+                location: "San Francisco, USA",
+                job: "Web Developer",
+                joined: "Joined March 2022"
+            };
+            
+            // Save to sessionStorage
+            sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+            
+            // Update UI
+            updateProfile(user);
+            
+            // Show success message
+            alert('Successfully logged in! Welcome back, Emily!');
+        }
+        
+        // Function to update the profile UI
+        function updateProfile(user) {
+            document.getElementById('user-name').textContent = user.name;
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('info-email').textContent = user.email;
+            document.getElementById('info-phone').textContent = user.phone;
+            document.getElementById('info-location').textContent = user.location;
+            document.getElementById('info-job').textContent = user.job;
+            document.getElementById('info-joined').textContent = user.joined;
+            
+            const badge = document.getElementById('user-badge');
+            badge.textContent = user.role;
+            badge.className = 'badge badge-user';
+            
+            // Hide login prompt
+            document.getElementById('login-prompt').style.display = 'none';
+            document.getElementById('profile-view').style.display = 'block';
+        }
+        
+        // Check if user is logged in on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                const user = JSON.parse(loggedInUser);
+                updateProfile(user);
+            } else {
+                // Show login prompt if not logged in
+                document.getElementById('login-prompt').style.display = 'block';
+                document.getElementById('profile-view').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
